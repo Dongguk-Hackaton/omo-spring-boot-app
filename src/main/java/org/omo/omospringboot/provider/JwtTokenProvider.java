@@ -121,7 +121,7 @@ public class JwtTokenProvider {
 
     public String reIssueAccessToken(String accessToken) {
         Authentication authentication = getAuthentication(accessToken);
-        Claims claims = Jwts.claims().setSubject(authentication.getName()); // subject
+        Claims claims = Jwts.claims().setSubject(String.valueOf(((User) authentication.getPrincipal()).getUserProfileId())); // subject
         Date now = new Date();
 
         return Jwts.builder()
