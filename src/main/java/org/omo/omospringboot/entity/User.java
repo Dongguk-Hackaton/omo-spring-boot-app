@@ -39,7 +39,7 @@ public class User implements OAuth2User {
     @Column(nullable = false, unique = true)
     private Long userProfileId;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String nickname;
 
     @Column(nullable = false)
