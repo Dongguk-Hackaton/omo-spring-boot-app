@@ -2,7 +2,7 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "dev-cicd" ]
+    branches: [ "feature/dev-cicd" ]
 
 permissions:
   contents: read
