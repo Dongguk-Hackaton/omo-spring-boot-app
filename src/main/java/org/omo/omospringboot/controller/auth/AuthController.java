@@ -1,7 +1,6 @@
 package org.omo.omospringboot.controller.auth;
 
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.omo.omospringboot.dto.auth.login.LoginResponseDto;
 import org.omo.omospringboot.dto.auth.logout.LogoutResponseDto;
 import org.omo.omospringboot.dto.auth.tokenReissue.ReIssueTokenResponseDto;
