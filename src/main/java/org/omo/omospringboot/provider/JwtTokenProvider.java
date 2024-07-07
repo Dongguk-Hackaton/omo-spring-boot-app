@@ -1,11 +1,9 @@
 package org.omo.omospringboot.provider;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SecurityException;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.omo.omospringboot.constant.ErrorCode;
 import org.omo.omospringboot.constant.TokenType;
@@ -13,13 +11,11 @@ import org.omo.omospringboot.entity.User;
 import org.omo.omospringboot.exception.CustomErrorException;
 import org.omo.omospringboot.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.io.IOException;
 import java.security.Key;
 import java.util.Date;
 
