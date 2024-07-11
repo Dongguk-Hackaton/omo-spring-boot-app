@@ -71,8 +71,14 @@ public enum ErrorCode {
     ),
     NoSuchRefreshTokenError(
             HttpStatus.UNAUTHORIZED, "존재하지 않은 RefreshToken입니다."
-    )
-    ;
+    ),
+
+    // ----- Taste ------
+    NotExistInterestCodeError(
+            HttpStatus.NOT_FOUND, "존재하지 않는 관심사입니다."
+    ),
+    AlreadyExistTasteProfileError(
+            HttpStatus.CONFLICT, "이미 사용자의 취향 프로필이 존재합니다.");
 
     private final HttpStatus httpStatus;
     private final String message;
