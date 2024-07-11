@@ -46,4 +46,5 @@ public class AuthController {
         ReIssueTokenResponseDto reIssueTokenResponseDto = authService.reIssueToken(accessToken, refreshToken);
         return new ResponseEntity<>(reIssueTokenResponseDto, HttpStatus.CREATED);
     }
+
 }
