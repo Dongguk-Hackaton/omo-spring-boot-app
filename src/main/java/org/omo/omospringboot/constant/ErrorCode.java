@@ -44,7 +44,7 @@ public enum ErrorCode {
     ),
 
     ForbiddenKakaoError(
-            HttpStatus.UNAUTHORIZED, "허가되지 않은 카카오 접근입니다."
+            HttpStatus.FORBIDDEN, "허가되지 않은 카카오 접근입니다."
     ),
 
     // ----- Token ------
