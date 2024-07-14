@@ -9,10 +9,10 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
-public class TasteDeleteResponseDto {
+public class TastePutResponseDto {
     private String message;
 
-    private LocalDateTime deleteTime;
+    private LocalDateTime updateTime;
 
     private Long tasteProfileId;
 }

@@ -37,4 +37,11 @@ public class TasteProfile {
                 .interests(interests)
                 .build();
     }
+
+    public void update(User user, int userActivity, int userWalking, List<Interest> interests) {
+        this.user = user;
+        this.userActivity = userActivity;
+        this.userWalking = userWalking;
+        this.interests = interests;
+    }
 }

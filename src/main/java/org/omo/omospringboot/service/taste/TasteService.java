@@ -4,13 +4,16 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.omo.omospringboot.constant.ErrorCode;
+import org.omo.omospringboot.dto.taste.TasteDeleteResponseDto;
 import org.omo.omospringboot.dto.taste.TasteGetResponseDto;
+import org.omo.omospringboot.dto.taste.TastePutResponseDto;
 import org.omo.omospringboot.dto.taste.TasteSaveRequestDto;
 import org.omo.omospringboot.entity.*;
 import org.omo.omospringboot.exception.CustomErrorException;
 import org.omo.omospringboot.repository.*;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -60,26 +63,16 @@ public class TasteService {
             throw new CustomErrorException(ErrorCode.UserNotFoundError);
         }
 
-        if(tasteProfileRepository.findByUser(user).isEmpty()) {
-            throw new CustomErrorException(ErrorCode.TasteProfileNotFoundError);
-        }
+        TasteProfile tasteProfile = tasteProfileRepository.findByUser(user)
+                .orElseThrow(() -> new CustomErrorException(ErrorCode.TasteProfileNotFoundError));
 
-        TasteProfile tasteProfile = tasteProfileRepository.findByUserId(user.getId());
-        Long tasteProfileId = tasteProfile.getId();
+        List<DislikedFood> dislikedFoodList = dislikedFoodRepository.findByTasteProfile(tasteProfile);
+        List<String> dislikedFoods = getDislikedFoods(dislikedFoodList);
 
-        List<DislikedFood> dislikedFoodList = dislikedFoodRepository.findByTasteProfileId(tasteProfileId);
-        List<String> dislikedFoods = dislikedFoodList.stream()
-                .map(DislikedFood::getFoodName)
-                .collect(Collectors.toList());
+        List<FavoriteFood> favoriteFoodList = favoriteFoodRepository.findByTasteProfile(tasteProfile);
+        List<String> favoriteFoods = getFavoriteFoods(favoriteFoodList);
 
-        List<FavoriteFood> favoriteFoodList = favoriteFoodRepository.findByTasteProfileId(tasteProfileId);
-        List<String> favoriteFoods = favoriteFoodList.stream()
-                .map(FavoriteFood::getFoodName)
-                .collect(Collectors.toList());
-
-        List<String> interestCodes = tasteProfile.getInterests().stream()
-                .map(Interest::getInterestCode)
-                .collect(Collectors.toList());
+        List<String> interestCodes = getInterestCodes(tasteProfile);
 
         return TasteGetResponseDto.builder()
                 .userActivity(tasteProfile.getUserActivity())
@@ -90,51 +83,71 @@ public class TasteService {
                 .build();
     }
 
-    public void patchTaste(User user, TasteSaveRequestDto requestDto) {
+    private static List<String> getDislikedFoods(List<DislikedFood> dislikedFoodList) {
+        return dislikedFoodList.stream()
+                .map(DislikedFood::getFoodName)
+                .collect(Collectors.toList());
+    }
+
+    private static List<String> getFavoriteFoods(List<FavoriteFood> favoriteFoodList) {
+        return favoriteFoodList.stream()
+                .map(FavoriteFood::getFoodName)
+                .collect(Collectors.toList());
+    }
+
+    private static List<String> getInterestCodes(TasteProfile tasteProfile) {
+        return tasteProfile.getInterests().stream()
+                .map(Interest::getInterestCode)
+                .collect(Collectors.toList());
+    }
+
+    public TastePutResponseDto putTaste(User user, TasteSaveRequestDto requestDto) {
         if(user == null) {
             throw new CustomErrorException(ErrorCode.UserNotFoundError);
         }
 
-        TasteProfile tasteProfile = tasteProfileRepository.findByUserId(user.getId());
-        Long tasteProfileId = tasteProfile.getId();
+        TasteProfile tasteProfile = tasteProfileRepository.findByUser(user)
+                .orElseThrow(() -> new CustomErrorException(ErrorCode.TasteProfileNotFoundError));
 
-        tasteProfile.setUserActivity(requestDto.getUserActivity());
-        tasteProfile.setUserWalking(requestDto.getUserWalking());
-
-        dislikedFoodRepository.deleteByTasteProfileId(tasteProfileId);
-        List<String> dislikedFoods = requestDto.getDislikedFoods();
-        dislikedFoods.forEach(foodName -> {
-            DislikedFood dislikedFood = DislikedFood.of(tasteProfile, foodName);
-            dislikedFoodRepository.save(dislikedFood);
-        });
-
-        favoriteFoodRepository.deleteByTasteProfileId(tasteProfileId);
-        List<String> favoriteFoods = requestDto.getFavoriteFoods();
-        favoriteFoods.forEach(foodName -> {
-            FavoriteFood favoriteFood = FavoriteFood.of(tasteProfile, foodName);
-            favoriteFoodRepository.save(favoriteFood);
-        });
+        List<Interest> interests = requestDto.getInterestCode().stream().map(
+                s -> interestRepository.findByInterestCode(s)
+                        .orElseThrow(() -> new CustomErrorException(ErrorCode.NotExistInterestCodeError))
+        ).toList();
 
 
-        tasteProfile.getInterests().clear();
-        List<String> interestCodes = requestDto.getInterestCode();
+        tasteProfile.update(user, requestDto.getUserActivity(), requestDto.getUserWalking(), interests);
 
-        for (String interestCode : interestCodes) {
-            Interest interest = interestRepository.findByInterestCode(interestCode)
-                    .orElseThrow(() -> new CustomErrorException(ErrorCode.NotExistInterestCodeError));
-            tasteProfile.getInterests().add(interest);
-        }
+        favoriteFoodRepository.deleteByTasteProfile(tasteProfile);
+        requestDto.getFavoriteFoods().forEach(
+                s -> favoriteFoodRepository.save(FavoriteFood.of(tasteProfile, s))
+        );
 
-        tasteProfileRepository.save(tasteProfile);
+        dislikedFoodRepository.deleteByTasteProfile(tasteProfile);
+        requestDto.getDislikedFoods().forEach(
+                s -> dislikedFoodRepository.save(DislikedFood.of(tasteProfile, s))
+        );
+
+        return TastePutResponseDto.builder()
+                .updateTime(LocalDateTime.now())
+                .tasteProfileId(tasteProfile.getId())
+                .message("취향이 수정되었습니다.")
+                .build();
     }
 
-    public void deleteTaste(User user) {
-        TasteProfile tasteProfile = tasteProfileRepository.findByUserId(user.getId());
-        Long tasteProfileId = tasteProfile.getId();
+    public TasteDeleteResponseDto deleteTaste(User user) {
 
-        dislikedFoodRepository.deleteByTasteProfileId(tasteProfileId);
-        favoriteFoodRepository.deleteByTasteProfileId(tasteProfileId);
+        TasteProfile tasteProfile = tasteProfileRepository.findByUser(user)
+                .orElseThrow(() -> new CustomErrorException(ErrorCode.TasteProfileNotFoundError));
+
+        dislikedFoodRepository.deleteByTasteProfile(tasteProfile);
+        favoriteFoodRepository.deleteByTasteProfile(tasteProfile);
         tasteProfile.getInterests().clear();
         tasteProfileRepository.delete(tasteProfile);
+
+        return TasteDeleteResponseDto.builder()
+                .deleteTime(LocalDateTime.now())
+                .tasteProfileId(tasteProfile.getId())
+                .message("취향이 삭제되었습니다.")
+                .build();
     }
 }
