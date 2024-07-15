@@ -8,6 +8,7 @@ import java.util.List;
 @Entity
 @Table
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
@@ -35,5 +36,12 @@ public class TasteProfile {
                 .userWalking(userWalking)
                 .interests(interests)
                 .build();
+    }
+
+    public void update(User user, int userActivity, int userWalking, List<Interest> interests) {
+        this.user = user;
+        this.userActivity = userActivity;
+        this.userWalking = userWalking;
+        this.interests = interests;
     }
 }
