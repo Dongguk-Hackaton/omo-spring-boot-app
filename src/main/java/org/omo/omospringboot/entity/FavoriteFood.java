@@ -2,6 +2,7 @@ package org.omo.omospringboot.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.omo.omospringboot.constant.FoodType;
 
 @Entity
 @Table
@@ -18,12 +19,12 @@ public class FavoriteFood {
     private TasteProfile tasteProfile;
 
     @Column(nullable = false)
-    private String foodName;
+    private FoodType foodType;
 
-    public static FavoriteFood of(TasteProfile tasteProfile, String foodName){
+    public static FavoriteFood of(TasteProfile tasteProfile, FoodType foodType){
         return FavoriteFood.builder()
                 .tasteProfile(tasteProfile)
-                .foodName(foodName)
+                .foodType(foodType)
                 .build();
     }
 }

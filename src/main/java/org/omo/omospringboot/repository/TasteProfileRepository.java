@@ -4,7 +4,6 @@ import org.omo.omospringboot.entity.TasteProfile;
 import org.omo.omospringboot.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface TasteProfileRepository extends JpaRepository<TasteProfile, Long> {
@@ -12,4 +11,3 @@ public interface TasteProfileRepository extends JpaRepository<TasteProfile, Long
 
     TasteProfile findByUserId(Long userId);
 }
-

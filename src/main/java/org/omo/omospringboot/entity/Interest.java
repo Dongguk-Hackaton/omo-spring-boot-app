@@ -2,6 +2,7 @@ package org.omo.omospringboot.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.omo.omospringboot.constant.InterestType;
 
 @Entity
 @Table
@@ -14,6 +15,16 @@ public class Interest {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
-    private String interestCode;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private TasteProfile tasteProfile;
+
+    @Column(nullable = false)
+    private InterestType interestType;
+
+    public static Interest of(TasteProfile tasteProfile, InterestType interestType){
+        return Interest.builder()
+                .tasteProfile(tasteProfile)
+                .interestType(interestType)
+                .build();
+    }
 }

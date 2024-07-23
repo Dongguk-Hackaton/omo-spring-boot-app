@@ -2,20 +2,22 @@ package org.omo.omospringboot.service.taste;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.omo.omospringboot.constant.ErrorCode;
+import org.omo.omospringboot.constant.FoodType;
+import org.omo.omospringboot.constant.InterestType;
 import org.omo.omospringboot.dto.taste.TasteDeleteResponseDto;
 import org.omo.omospringboot.dto.taste.TasteGetResponseDto;
 import org.omo.omospringboot.dto.taste.TastePutResponseDto;
 import org.omo.omospringboot.dto.taste.TasteSaveRequestDto;
 import org.omo.omospringboot.entity.*;
 import org.omo.omospringboot.exception.CustomErrorException;
-import org.omo.omospringboot.repository.*;
+import org.omo.omospringboot.repository.DislikedFoodRepository;
+import org.omo.omospringboot.repository.FavoriteFoodRepository;
+import org.omo.omospringboot.repository.InterestRepository;
+import org.omo.omospringboot.repository.TasteProfileRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,25 +39,44 @@ public class TasteService {
             throw new CustomErrorException(ErrorCode.AlreadyExistTasteProfileError);
         }
 
-        List<Interest> interests = requestDto.getInterestCode().stream().map(
-                s -> interestRepository.findByInterestCode(s)
-                        .orElseThrow(() -> new CustomErrorException(ErrorCode.NotExistInterestCodeError))
-        ).toList();
-
         TasteProfile newTasteProfile = tasteProfileRepository.save(TasteProfile.of(
                 user,
-                requestDto.getUserActivity(),
-                requestDto.getUserWalking(),
-                interests
+                requestDto.getUserActivity()
         ));
 
+        requestDto.getInterests().forEach(
+                s -> {
+                    try {
+                        InterestType interestType = InterestType.getInterestType(s);
+                        interestRepository.save(Interest.of(newTasteProfile, interestType));
+                    } catch (CustomErrorException e) {
+                        throw new CustomErrorException(ErrorCode.NotExistInterestCodeError);
+                    }
+                }
+        );
+
         requestDto.getFavoriteFoods().forEach(
-                s -> favoriteFoodRepository.save(FavoriteFood.of(newTasteProfile, s))
+                s -> {
+                    try {
+                        FoodType foodType = FoodType.getFoodType(s);
+                        favoriteFoodRepository.save(FavoriteFood.of(newTasteProfile, foodType));
+                    } catch (CustomErrorException e) {
+                        throw new CustomErrorException(ErrorCode.NoSuchFoodTypeError);
+                    }
+                }
         );
 
         requestDto.getDislikedFoods().forEach(
-                s -> dislikedFoodRepository.save(DislikedFood.of(newTasteProfile, s))
+                s -> {
+                    try {
+                        FoodType foodType = FoodType.getFoodType(s);
+                        dislikedFoodRepository.save(DislikedFood.of(newTasteProfile, foodType));
+                    } catch (CustomErrorException e) {
+                        throw new CustomErrorException(ErrorCode.NoSuchFoodTypeError);
+                    }
+                }
         );
+
     }
 
     public TasteGetResponseDto getTaste(User user) {
@@ -67,37 +88,37 @@ public class TasteService {
                 .orElseThrow(() -> new CustomErrorException(ErrorCode.TasteProfileNotFoundError));
 
         List<DislikedFood> dislikedFoodList = dislikedFoodRepository.findByTasteProfile(tasteProfile);
-        List<String> dislikedFoods = getDislikedFoods(dislikedFoodList);
+        List<FoodType> dislikedFoods = getDislikedFoods(dislikedFoodList);
 
         List<FavoriteFood> favoriteFoodList = favoriteFoodRepository.findByTasteProfile(tasteProfile);
-        List<String> favoriteFoods = getFavoriteFoods(favoriteFoodList);
+        List<FoodType> favoriteFoods = getFavoriteFoods(favoriteFoodList);
 
-        List<String> interestCodes = getInterestCodes(tasteProfile);
+        List<Interest> interestList = interestRepository.findByTasteProfile(tasteProfile);
+        List<InterestType> interests = getInterests(interestList);
 
         return TasteGetResponseDto.builder()
                 .userActivity(tasteProfile.getUserActivity())
-                .userWalking(tasteProfile.getUserWalking())
                 .favoriteFoods(favoriteFoods)
                 .dislikedFoods(dislikedFoods)
-                .interestCode(interestCodes)
+                .interests(interests)
                 .build();
     }
 
-    private static List<String> getDislikedFoods(List<DislikedFood> dislikedFoodList) {
+    private static List<FoodType> getDislikedFoods(List<DislikedFood> dislikedFoodList) {
         return dislikedFoodList.stream()
-                .map(DislikedFood::getFoodName)
+                .map(DislikedFood::getFoodType)
                 .collect(Collectors.toList());
     }
 
-    private static List<String> getFavoriteFoods(List<FavoriteFood> favoriteFoodList) {
+    private static List<FoodType> getFavoriteFoods(List<FavoriteFood> favoriteFoodList) {
         return favoriteFoodList.stream()
-                .map(FavoriteFood::getFoodName)
+                .map(FavoriteFood::getFoodType)
                 .collect(Collectors.toList());
     }
 
-    private static List<String> getInterestCodes(TasteProfile tasteProfile) {
-        return tasteProfile.getInterests().stream()
-                .map(Interest::getInterestCode)
+    private static List<InterestType> getInterests(List<Interest> interests) {
+        return interests.stream()
+                .map(Interest::getInterestType)
                 .collect(Collectors.toList());
     }
 
@@ -109,22 +130,43 @@ public class TasteService {
         TasteProfile tasteProfile = tasteProfileRepository.findByUser(user)
                 .orElseThrow(() -> new CustomErrorException(ErrorCode.TasteProfileNotFoundError));
 
-        List<Interest> interests = requestDto.getInterestCode().stream().map(
-                s -> interestRepository.findByInterestCode(s)
-                        .orElseThrow(() -> new CustomErrorException(ErrorCode.NotExistInterestCodeError))
-        ).toList();
-
-
-        tasteProfile.update(user, requestDto.getUserActivity(), requestDto.getUserWalking(), interests);
+        tasteProfile.update(user, requestDto.getUserActivity());
 
         favoriteFoodRepository.deleteByTasteProfile(tasteProfile);
         requestDto.getFavoriteFoods().forEach(
-                s -> favoriteFoodRepository.save(FavoriteFood.of(tasteProfile, s))
+                s -> {
+                    try {
+                        FoodType foodType = FoodType.getFoodType(s);
+                        favoriteFoodRepository.save(FavoriteFood.of(tasteProfile, foodType));
+                    } catch (CustomErrorException e) {
+                        throw new CustomErrorException(ErrorCode.NoSuchFoodTypeError);
+                    }
+                }
         );
+
 
         dislikedFoodRepository.deleteByTasteProfile(tasteProfile);
         requestDto.getDislikedFoods().forEach(
-                s -> dislikedFoodRepository.save(DislikedFood.of(tasteProfile, s))
+                s -> {
+                    try {
+                        FoodType foodType = FoodType.getFoodType(s);
+                        dislikedFoodRepository.save(DislikedFood.of(tasteProfile, foodType));
+                    } catch (CustomErrorException e) {
+                        throw new CustomErrorException(ErrorCode.NoSuchFoodTypeError);
+                    }
+                }
+        );
+
+        interestRepository.deleteByTasteProfile(tasteProfile);
+        requestDto.getInterests().forEach(
+                s -> {
+                    try {
+                        InterestType interestType = InterestType.getInterestType(s);
+                        interestRepository.save(Interest.of(tasteProfile, interestType));
+                    } catch (CustomErrorException e) {
+                        throw new CustomErrorException(ErrorCode.NoSuchInterestTypeError);
+                    }
+                }
         );
 
         return TastePutResponseDto.builder()
@@ -135,13 +177,16 @@ public class TasteService {
     }
 
     public TasteDeleteResponseDto deleteTaste(User user) {
+        if(user == null) {
+            throw new CustomErrorException(ErrorCode.UserNotFoundError);
+        }
 
         TasteProfile tasteProfile = tasteProfileRepository.findByUser(user)
                 .orElseThrow(() -> new CustomErrorException(ErrorCode.TasteProfileNotFoundError));
 
         dislikedFoodRepository.deleteByTasteProfile(tasteProfile);
         favoriteFoodRepository.deleteByTasteProfile(tasteProfile);
-        tasteProfile.getInterests().clear();
+        interestRepository.deleteByTasteProfile(tasteProfile);
         tasteProfileRepository.delete(tasteProfile);
 
         return TasteDeleteResponseDto.builder()
