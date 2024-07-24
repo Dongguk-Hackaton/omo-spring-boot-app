@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
-public class TastePutResponseDto {
+public class TasteUpdateResponseDto {
     private String message;
 
     private LocalDateTime updateTime;
