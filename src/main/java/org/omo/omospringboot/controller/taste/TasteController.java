@@ -31,10 +31,10 @@ public class TasteController {
     }
 
     @PutMapping()
-    public ResponseEntity<TastePutResponseDto> putTaste(@AuthenticationPrincipal User user,
-                                                          @Valid @RequestBody TasteSaveRequestDto requestDto) {
+    public ResponseEntity<TasteUpdateResponseDto> putTaste(@AuthenticationPrincipal User user,
+                                                           @Valid @RequestBody TasteUpdateRequestDto requestDto) {
 
-        TastePutResponseDto tastePutResponseDto = tasteService.putTaste(user, requestDto);
+        TasteUpdateResponseDto tastePutResponseDto = tasteService.putTaste(user, requestDto);
         return new ResponseEntity<>(tastePutResponseDto, HttpStatus.OK);
     }
 

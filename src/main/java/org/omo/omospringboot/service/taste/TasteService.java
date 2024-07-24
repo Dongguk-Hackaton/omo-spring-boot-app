@@ -5,10 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.omo.omospringboot.constant.ErrorCode;
 import org.omo.omospringboot.constant.FoodType;
 import org.omo.omospringboot.constant.InterestType;
-import org.omo.omospringboot.dto.taste.TasteDeleteResponseDto;
-import org.omo.omospringboot.dto.taste.TasteGetResponseDto;
-import org.omo.omospringboot.dto.taste.TastePutResponseDto;
-import org.omo.omospringboot.dto.taste.TasteSaveRequestDto;
+import org.omo.omospringboot.dto.taste.*;
 import org.omo.omospringboot.entity.*;
 import org.omo.omospringboot.exception.CustomErrorException;
 import org.omo.omospringboot.repository.DislikedFoodRepository;
@@ -46,34 +43,22 @@ public class TasteService {
 
         requestDto.getInterests().forEach(
                 s -> {
-                    try {
                         InterestType interestType = InterestType.getInterestType(s);
                         interestRepository.save(Interest.of(newTasteProfile, interestType));
-                    } catch (CustomErrorException e) {
-                        throw new CustomErrorException(ErrorCode.NotExistInterestCodeError);
-                    }
                 }
         );
 
         requestDto.getFavoriteFoods().forEach(
                 s -> {
-                    try {
                         FoodType foodType = FoodType.getFoodType(s);
                         favoriteFoodRepository.save(FavoriteFood.of(newTasteProfile, foodType));
-                    } catch (CustomErrorException e) {
-                        throw new CustomErrorException(ErrorCode.NoSuchFoodTypeError);
-                    }
                 }
         );
 
         requestDto.getDislikedFoods().forEach(
                 s -> {
-                    try {
                         FoodType foodType = FoodType.getFoodType(s);
                         dislikedFoodRepository.save(DislikedFood.of(newTasteProfile, foodType));
-                    } catch (CustomErrorException e) {
-                        throw new CustomErrorException(ErrorCode.NoSuchFoodTypeError);
-                    }
                 }
         );
 
@@ -122,7 +107,7 @@ public class TasteService {
                 .collect(Collectors.toList());
     }
 
-    public TastePutResponseDto putTaste(User user, TasteSaveRequestDto requestDto) {
+    public TasteUpdateResponseDto putTaste(User user, TasteUpdateRequestDto requestDto) {
         if(user == null) {
             throw new CustomErrorException(ErrorCode.UserNotFoundError);
         }
@@ -135,41 +120,28 @@ public class TasteService {
         favoriteFoodRepository.deleteByTasteProfile(tasteProfile);
         requestDto.getFavoriteFoods().forEach(
                 s -> {
-                    try {
                         FoodType foodType = FoodType.getFoodType(s);
                         favoriteFoodRepository.save(FavoriteFood.of(tasteProfile, foodType));
-                    } catch (CustomErrorException e) {
-                        throw new CustomErrorException(ErrorCode.NoSuchFoodTypeError);
-                    }
                 }
         );
-
 
         dislikedFoodRepository.deleteByTasteProfile(tasteProfile);
         requestDto.getDislikedFoods().forEach(
                 s -> {
-                    try {
                         FoodType foodType = FoodType.getFoodType(s);
                         dislikedFoodRepository.save(DislikedFood.of(tasteProfile, foodType));
-                    } catch (CustomErrorException e) {
-                        throw new CustomErrorException(ErrorCode.NoSuchFoodTypeError);
-                    }
                 }
         );
 
         interestRepository.deleteByTasteProfile(tasteProfile);
         requestDto.getInterests().forEach(
                 s -> {
-                    try {
                         InterestType interestType = InterestType.getInterestType(s);
                         interestRepository.save(Interest.of(tasteProfile, interestType));
-                    } catch (CustomErrorException e) {
-                        throw new CustomErrorException(ErrorCode.NoSuchInterestTypeError);
-                    }
                 }
         );
 
-        return TastePutResponseDto.builder()
+        return TasteUpdateResponseDto.builder()
                 .updateTime(LocalDateTime.now())
                 .tasteProfileId(tasteProfile.getId())
                 .message("취향이 수정되었습니다.")
