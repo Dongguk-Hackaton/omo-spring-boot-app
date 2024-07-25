@@ -1,7 +1,5 @@
 package org.omo.omospringboot.dto.taste;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 

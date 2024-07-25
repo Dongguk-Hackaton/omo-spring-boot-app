@@ -83,6 +83,12 @@ public enum ErrorCode {
 
     TasteProfileNotFoundError(
             HttpStatus.NOT_FOUND, "사용자의 취향 프로필이 존재하지 않습니다."
+    ),
+    NoSuchFoodTypeError(
+            HttpStatus.NOT_FOUND, "해당 음식은 존재하지 않습니다."
+    ),
+    NoSuchInterestTypeError(
+            HttpStatus.NOT_FOUND, "해당 관심사는 존재하지 않습니다."
     );
 
     private final HttpStatus httpStatus;
