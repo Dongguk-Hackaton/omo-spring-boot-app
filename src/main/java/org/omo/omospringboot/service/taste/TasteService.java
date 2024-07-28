@@ -2,16 +2,14 @@ package org.omo.omospringboot.service.taste;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.omo.omospringboot.constant.DateStyleType;
 import org.omo.omospringboot.constant.ErrorCode;
 import org.omo.omospringboot.constant.FoodType;
 import org.omo.omospringboot.constant.InterestType;
 import org.omo.omospringboot.dto.taste.*;
 import org.omo.omospringboot.entity.*;
 import org.omo.omospringboot.exception.CustomErrorException;
-import org.omo.omospringboot.repository.DislikedFoodRepository;
-import org.omo.omospringboot.repository.FavoriteFoodRepository;
-import org.omo.omospringboot.repository.InterestRepository;
-import org.omo.omospringboot.repository.TasteProfileRepository;
+import org.omo.omospringboot.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -23,6 +21,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class TasteService {
     private final TasteProfileRepository tasteProfileRepository;
+    private final DateStyleRepository dateStyleRepository;
     private final InterestRepository interestRepository;
     private final DislikedFoodRepository dislikedFoodRepository;
     private final FavoriteFoodRepository favoriteFoodRepository;
@@ -40,6 +39,13 @@ public class TasteService {
                 user,
                 requestDto.getUserActivity()
         ));
+
+        requestDto.getDateStyles().forEach(
+                s -> {
+                    DateStyleType dateStyleType = DateStyleType.getDateStyleType(s);
+                    dateStyleRepository.save(DateStyle.of(newTasteProfile, dateStyleType));
+                }
+        );
 
         requestDto.getInterests().forEach(
                 s -> {
@@ -61,7 +67,6 @@ public class TasteService {
                         dislikedFoodRepository.save(DislikedFood.of(newTasteProfile, foodType));
                 }
         );
-
     }
 
     public TasteGetResponseDto getTaste(User user) {
@@ -71,6 +76,9 @@ public class TasteService {
 
         TasteProfile tasteProfile = tasteProfileRepository.findByUser(user)
                 .orElseThrow(() -> new CustomErrorException(ErrorCode.TasteProfileNotFoundError));
+
+        List<DateStyle> dateStyleList = dateStyleRepository.findByTasteProfile(tasteProfile);
+        List<DateStyleType> dateStyles = getDateStyles(dateStyleList);
 
         List<DislikedFood> dislikedFoodList = dislikedFoodRepository.findByTasteProfile(tasteProfile);
         List<FoodType> dislikedFoods = getDislikedFoods(dislikedFoodList);
@@ -83,10 +91,17 @@ public class TasteService {
 
         return TasteGetResponseDto.builder()
                 .userActivity(tasteProfile.getUserActivity())
+                .dateStyles(dateStyles)
                 .favoriteFoods(favoriteFoods)
                 .dislikedFoods(dislikedFoods)
                 .interests(interests)
                 .build();
+    }
+
+    private static List<DateStyleType> getDateStyles(List<DateStyle> dateStyleList) {
+        return dateStyleList.stream()
+                .map(DateStyle::getDateStyleType)
+                .collect(Collectors.toList());
     }
 
     private static List<FoodType> getDislikedFoods(List<DislikedFood> dislikedFoodList) {
@@ -117,6 +132,14 @@ public class TasteService {
 
         tasteProfile.update(user, requestDto.getUserActivity());
 
+        dateStyleRepository.deleteByTasteProfile(tasteProfile);
+        requestDto.getDateStyles().forEach(
+                s -> {
+                    DateStyleType dateStyleType = DateStyleType.getDateStyleType(s);
+                    dateStyleRepository.save(DateStyle.of(tasteProfile, dateStyleType));
+                }
+        );
+
         favoriteFoodRepository.deleteByTasteProfile(tasteProfile);
         requestDto.getFavoriteFoods().forEach(
                 s -> {
@@ -142,7 +165,7 @@ public class TasteService {
         );
 
         return TasteUpdateResponseDto.builder()
-                .updateTime(LocalDateTime.now())
+                .updatedTime(LocalDateTime.now())
                 .tasteProfileId(tasteProfile.getId())
                 .message("취향이 수정되었습니다.")
                 .build();
@@ -156,13 +179,14 @@ public class TasteService {
         TasteProfile tasteProfile = tasteProfileRepository.findByUser(user)
                 .orElseThrow(() -> new CustomErrorException(ErrorCode.TasteProfileNotFoundError));
 
+        dateStyleRepository.deleteByTasteProfile(tasteProfile);
         dislikedFoodRepository.deleteByTasteProfile(tasteProfile);
         favoriteFoodRepository.deleteByTasteProfile(tasteProfile);
         interestRepository.deleteByTasteProfile(tasteProfile);
         tasteProfileRepository.delete(tasteProfile);
 
         return TasteDeleteResponseDto.builder()
-                .deleteTime(LocalDateTime.now())
+                .deletedTime(LocalDateTime.now())
                 .tasteProfileId(tasteProfile.getId())
                 .message("취향이 삭제되었습니다.")
                 .build();
