@@ -1,4 +1,4 @@
-package org.omo.omospringboot.entity;
+package org.omo.omospringboot.entity.location;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
@@ -6,23 +6,21 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Table
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@DiscriminatorValue("TOURIST_SPOT")
-public class TouristSpot extends Location{
-    private LocalDateTime startDay;
+@DiscriminatorValue("RESTAURANT")
+public class Restaurant extends Location{
+    @Column(nullable = false)
+    private String firstMenu;
 
-    private String experienceInformation;
+    @Column(nullable = false)
+    private String subMenu;
 
-    private String pet;
-
-    private String detailInformation;
+    private String reservation;
 
     @Column(nullable = false)
     private String parking;

@@ -1,8 +1,8 @@
-package org.omo.omospringboot.entity;
+package org.omo.omospringboot.entity.taste;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.omo.omospringboot.constant.FoodType;
+import org.omo.omospringboot.constant.InterestType;
 
 @Entity
 @Table
@@ -10,21 +10,21 @@ import org.omo.omospringboot.constant.FoodType;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class FavoriteFood {
+public class Interest {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private TasteProfile tasteProfile;
 
     @Column(nullable = false)
-    private FoodType foodType;
+    private InterestType interestType;
 
-    public static FavoriteFood of(TasteProfile tasteProfile, FoodType foodType){
-        return FavoriteFood.builder()
+    public static Interest of(TasteProfile tasteProfile, InterestType interestType){
+        return Interest.builder()
                 .tasteProfile(tasteProfile)
-                .foodType(foodType)
+                .interestType(interestType)
                 .build();
     }
 }

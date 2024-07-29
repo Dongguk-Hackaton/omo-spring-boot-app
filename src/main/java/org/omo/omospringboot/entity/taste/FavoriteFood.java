@@ -1,4 +1,4 @@
-package org.omo.omospringboot.entity;
+package org.omo.omospringboot.entity.taste;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -10,7 +10,7 @@ import org.omo.omospringboot.constant.FoodType;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class DislikedFood {
+public class FavoriteFood {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,8 +21,8 @@ public class DislikedFood {
     @Column(nullable = false)
     private FoodType foodType;
 
-    public static DislikedFood of(TasteProfile tasteProfile, FoodType foodType){
-        return DislikedFood.builder()
+    public static FavoriteFood of(TasteProfile tasteProfile, FoodType foodType){
+        return FavoriteFood.builder()
                 .tasteProfile(tasteProfile)
                 .foodType(foodType)
                 .build();

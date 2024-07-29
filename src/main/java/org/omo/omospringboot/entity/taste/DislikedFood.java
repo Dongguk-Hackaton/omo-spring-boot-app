@@ -1,8 +1,8 @@
-package org.omo.omospringboot.entity;
+package org.omo.omospringboot.entity.taste;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.omo.omospringboot.constant.DateStyleType;
+import org.omo.omospringboot.constant.FoodType;
 
 @Entity
 @Table
@@ -10,7 +10,7 @@ import org.omo.omospringboot.constant.DateStyleType;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class DateStyle {
+public class DislikedFood {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,12 +19,12 @@ public class DateStyle {
     private TasteProfile tasteProfile;
 
     @Column(nullable = false)
-    private DateStyleType dateStyleType;
+    private FoodType foodType;
 
-    public static DateStyle of(TasteProfile tasteProfile, DateStyleType dateStyleType){
-        return DateStyle.builder()
+    public static DislikedFood of(TasteProfile tasteProfile, FoodType foodType){
+        return DislikedFood.builder()
                 .tasteProfile(tasteProfile)
-                .dateStyleType(dateStyleType)
+                .foodType(foodType)
                 .build();
     }
 }

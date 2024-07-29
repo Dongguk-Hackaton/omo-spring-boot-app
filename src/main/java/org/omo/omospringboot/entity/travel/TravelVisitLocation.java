@@ -1,12 +1,11 @@
-package org.omo.omospringboot.entity;
+package org.omo.omospringboot.entity.travel;
 
 import jakarta.persistence.*;
 import lombok.*;
 import org.omo.omospringboot.constant.TimeBlockType;
+import org.omo.omospringboot.entity.location.Location;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Entity
 @Table

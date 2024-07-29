@@ -1,6 +1,6 @@
-package org.omo.omospringboot.repository;
+package org.omo.omospringboot.repository.user;
 
-import org.omo.omospringboot.entity.User;
+import org.omo.omospringboot.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

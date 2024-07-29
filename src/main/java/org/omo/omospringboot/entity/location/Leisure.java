@@ -1,4 +1,4 @@
-package org.omo.omospringboot.entity;
+package org.omo.omospringboot.entity.location;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
@@ -12,15 +12,15 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@DiscriminatorValue("CULTURE_FACILITY")
-public class CultureFacility extends Location{
-    private String fee;
+@DiscriminatorValue("LEISURE")
+public class Leisure extends Location{
+    private String duration; // 개장기간
 
-    private String discountInfo;
+    private String fee;
 
     private String pet;
 
-    private String detailInformation; // 상세 정보
+    private String detailInformation;
 
     @Column(nullable = false)
     private String parking;

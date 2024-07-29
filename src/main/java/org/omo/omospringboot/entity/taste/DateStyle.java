@@ -1,8 +1,8 @@
-package org.omo.omospringboot.entity;
+package org.omo.omospringboot.entity.taste;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.omo.omospringboot.constant.InterestType;
+import org.omo.omospringboot.constant.DateStyleType;
 
 @Entity
 @Table
@@ -10,21 +10,21 @@ import org.omo.omospringboot.constant.InterestType;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class Interest {
+public class DateStyle {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     private TasteProfile tasteProfile;
 
     @Column(nullable = false)
-    private InterestType interestType;
+    private DateStyleType dateStyleType;
 
-    public static Interest of(TasteProfile tasteProfile, InterestType interestType){
-        return Interest.builder()
+    public static DateStyle of(TasteProfile tasteProfile, DateStyleType dateStyleType){
+        return DateStyle.builder()
                 .tasteProfile(tasteProfile)
-                .interestType(interestType)
+                .dateStyleType(dateStyleType)
                 .build();
     }
 }

@@ -1,7 +1,7 @@
-package org.omo.omospringboot.repository;
+package org.omo.omospringboot.repository.taste;
 
-import org.omo.omospringboot.entity.DateStyle;
-import org.omo.omospringboot.entity.TasteProfile;
+import org.omo.omospringboot.entity.taste.DateStyle;
+import org.omo.omospringboot.entity.taste.TasteProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

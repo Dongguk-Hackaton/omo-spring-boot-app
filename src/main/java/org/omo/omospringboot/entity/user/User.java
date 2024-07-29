@@ -1,4 +1,4 @@
-package org.omo.omospringboot.entity;
+package org.omo.omospringboot.entity.user;
 
 import jakarta.persistence.*;
 import lombok.*;

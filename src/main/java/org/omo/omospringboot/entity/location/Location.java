@@ -1,9 +1,7 @@
-package org.omo.omospringboot.entity;
+package org.omo.omospringboot.entity.location;
 
 import jakarta.persistence.*;
 import lombok.*;
-
-import java.time.LocalTime;
 
 @Entity
 @Table

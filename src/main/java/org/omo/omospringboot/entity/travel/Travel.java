@@ -1,4 +1,4 @@
-package org.omo.omospringboot.entity;
+package org.omo.omospringboot.entity.travel;
 
 import jakarta.persistence.*;
 import lombok.*;

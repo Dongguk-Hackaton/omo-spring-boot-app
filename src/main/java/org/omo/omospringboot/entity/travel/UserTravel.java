@@ -1,7 +1,8 @@
-package org.omo.omospringboot.entity;
+package org.omo.omospringboot.entity.travel;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.omo.omospringboot.entity.user.User;
 
 @Entity
 @Table

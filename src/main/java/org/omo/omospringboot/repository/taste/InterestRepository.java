@@ -1,8 +1,8 @@
-package org.omo.omospringboot.repository;
+package org.omo.omospringboot.repository.taste;
 
 import org.omo.omospringboot.constant.InterestType;
-import org.omo.omospringboot.entity.Interest;
-import org.omo.omospringboot.entity.TasteProfile;
+import org.omo.omospringboot.entity.taste.Interest;
+import org.omo.omospringboot.entity.taste.TasteProfile;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
