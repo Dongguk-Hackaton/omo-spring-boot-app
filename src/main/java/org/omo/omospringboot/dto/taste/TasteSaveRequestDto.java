@@ -17,6 +17,8 @@ public class TasteSaveRequestDto {
     @Max(value = 10, message = "활동량은 10이하이여야 합니다.")
     private int userActivity;
 
+    private List<String> dateStyles;
+
     private List<String> favoriteFoods;
 
     private List<String> dislikedFoods;

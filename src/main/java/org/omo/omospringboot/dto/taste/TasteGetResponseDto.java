@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.omo.omospringboot.constant.DateStyleType;
 import org.omo.omospringboot.constant.FoodType;
 import org.omo.omospringboot.constant.InterestType;
 
@@ -17,6 +18,8 @@ import java.util.List;
 public class TasteGetResponseDto {
 
     private int userActivity;
+
+    private List<DateStyleType> dateStyles;
 
     private List<FoodType> favoriteFoods;
 
