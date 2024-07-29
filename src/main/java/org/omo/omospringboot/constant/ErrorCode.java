@@ -89,6 +89,9 @@ public enum ErrorCode {
     ),
     NoSuchInterestTypeError(
             HttpStatus.NOT_FOUND, "해당 관심사는 존재하지 않습니다."
+    ),
+    NoSuchTimeBlockError(
+            HttpStatus.NOT_FOUND, "해당 타임블럭은 존재하지 않습니다."
     );
 
     private final HttpStatus httpStatus;
