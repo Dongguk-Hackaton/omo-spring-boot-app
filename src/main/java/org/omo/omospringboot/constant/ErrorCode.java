@@ -92,6 +92,9 @@ public enum ErrorCode {
     ),
     NoSuchTimeBlockError(
             HttpStatus.NOT_FOUND, "해당 타임블럭은 존재하지 않습니다."
+    ),
+    NoSuchDateStyleTypeError(
+            HttpStatus.NOT_FOUND, "해당 데이트 스타일은 존재하지 않습니다."
     );
 
     private final HttpStatus httpStatus;
