@@ -19,6 +19,8 @@ public class PlaceGet {
     @Builder
     @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
     public static class Response {
+        private Long id;
+
         private String name;
 
         private String address;
@@ -45,6 +47,7 @@ public class PlaceGet {
 
         private static ResponseBuilder getResponseBuilder(Place place) {
             return Response.builder()
+                    .id(place.getId())
                     .name(place.getName())
                     .address(place.getAddress())
                     .latitude(place.getLatitude())
