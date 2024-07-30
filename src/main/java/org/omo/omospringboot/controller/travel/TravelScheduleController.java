@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 public class TravelScheduleController {
     private final TravelScheduleService travelScheduleService;
 
-    @GetMapping("/closet")
+    @GetMapping("/nearest")
     public ResponseEntity<NearestSchedule.Response> getNearestSchedule(@AuthenticationPrincipal User user) {
         return new ResponseEntity<>(travelScheduleService.getNearestSchedule(user), HttpStatus.OK);
 
