@@ -1,4 +1,4 @@
-package org.omo.omospringboot.entity.location;
+package org.omo.omospringboot.entity.place;
 
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
@@ -11,7 +11,7 @@ import lombok.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@DiscriminatorValue("UNIQUE_EXPERIENCE")
-public class UniqueExperience extends Location{
+@DiscriminatorValue("unique_experience")
+public class UniqueExperience extends Place {
     private String type;
 }

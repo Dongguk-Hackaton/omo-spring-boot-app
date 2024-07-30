@@ -1,4 +1,4 @@
-package org.omo.omospringboot.entity.location;
+package org.omo.omospringboot.entity.place;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,8 +7,8 @@ import lombok.*;
 @Table
 @Getter
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "LOCATION_TYPE")
-public abstract class Location {
+@DiscriminatorColumn(name = "location_type")
+public abstract class Place {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

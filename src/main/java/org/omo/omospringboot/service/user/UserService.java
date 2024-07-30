@@ -4,9 +4,9 @@ package org.omo.omospringboot.service.user;
 import lombok.RequiredArgsConstructor;
 import org.omo.omospringboot.constant.ErrorCode;
 import org.omo.omospringboot.dto.user.UserInfoResponseDto;
-import org.omo.omospringboot.entity.User;
+import org.omo.omospringboot.entity.user.User;
 import org.omo.omospringboot.exception.CustomErrorException;
-import org.omo.omospringboot.repository.UserRepository;
+import org.omo.omospringboot.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
 
 @Service

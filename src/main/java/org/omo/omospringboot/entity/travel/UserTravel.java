@@ -20,4 +20,11 @@ public class UserTravel {
 
     @ManyToOne(fetch = FetchType.LAZY)
     Travel travel;
+
+    public static UserTravel of(User user, Travel newTravel) {
+        return UserTravel.builder()
+                .user(user)
+                .travel(newTravel)
+                .build();
+    }
 }

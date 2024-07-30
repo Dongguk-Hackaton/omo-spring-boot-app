@@ -2,6 +2,7 @@ package org.omo.omospringboot.entity.travel;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.omo.omospringboot.dto.travel.travelScheduleSave.TravelItineraryRequestDto;
 
 import java.time.LocalDateTime;
 
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class TravelSchedule {
+public class ItineraryDays {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,4 +25,13 @@ public class TravelSchedule {
 
     @Column(nullable = false)
     private LocalDateTime endTime; // 여행 종료시간
+
+
+    public static ItineraryDays of(Travel newTravel, TravelItineraryRequestDto schedule) {
+        return ItineraryDays.builder()
+                .travel(newTravel)
+                .startTime(schedule.getStartTime())
+                .endTime(schedule.getEndTime())
+                .build();
+    }
 }

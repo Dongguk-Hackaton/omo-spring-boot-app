@@ -1,4 +1,4 @@
-package org.omo.omospringboot.entity.location;
+package org.omo.omospringboot.entity.place;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
@@ -14,8 +14,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-@DiscriminatorValue("TOURIST_SPOT")
-public class TouristSpot extends Location{
+@DiscriminatorValue("tourist_spot")
+public class TouristSpot extends Place {
     private LocalDateTime startDay;
 
     private String experienceInformation;
