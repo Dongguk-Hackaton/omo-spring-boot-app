@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.omo.omospringboot.constant.CityType;
 import org.omo.omospringboot.constant.ProvinceType;
-import org.omo.omospringboot.dto.travel.travelScheduleSave.TravelScheduleSaveRequestDto;
+import org.omo.omospringboot.dto.travel.TravelScheduleSave;
 
 import java.time.LocalDate;
 
@@ -31,7 +31,7 @@ public class Travel {
     @Column(nullable = false)
     private CityType city; // 시/군
 
-    public static Travel of(TravelScheduleSaveRequestDto requestDto, ProvinceType province, CityType city) {
+    public static Travel of(TravelScheduleSave.Request requestDto, ProvinceType province, CityType city) {
         return Travel.builder()
                 .startDay(requestDto.getStartDay())
                 .endDay(requestDto.getEndDay())

@@ -6,10 +6,8 @@ import org.omo.omospringboot.constant.CityType;
 import org.omo.omospringboot.constant.ErrorCode;
 import org.omo.omospringboot.constant.ProvinceType;
 import org.omo.omospringboot.constant.TimeBlockType;
-import org.omo.omospringboot.dto.travel.theClosetTravelGet.TheClosetTravelGetResponseDto;
-import org.omo.omospringboot.dto.travel.travelScheduleSave.TravelScheduleSaveRequestDto;
-import org.omo.omospringboot.dto.travel.travelScheduleSave.TravelItineraryRequestDto;
-import org.omo.omospringboot.dto.travel.travelScheduleSave.VisitsRequestDto;
+import org.omo.omospringboot.dto.travel.NearestSchedule;
+import org.omo.omospringboot.dto.travel.TravelScheduleSave;
 import org.omo.omospringboot.entity.place.Place;
 import org.omo.omospringboot.entity.travel.Travel;
 import org.omo.omospringboot.entity.travel.ItineraryDays;
@@ -41,7 +39,7 @@ public class TravelScheduleService {
     private final VisitsRepository visitsRepository;
     private final PlaceRepository placeRepository;
 
-    public void saveTravelSchedule(User me, TravelScheduleSaveRequestDto requestDto) {
+    public void saveTravelSchedule(User me, TravelScheduleSave.Request requestDto) {
         if(me == null) {
             throw new CustomErrorException(ErrorCode.UserNotFoundError);
         }
@@ -50,7 +48,7 @@ public class TravelScheduleService {
         saveItinerary(newTravel, requestDto);
     }
 
-    public TheClosetTravelGetResponseDto getTheClosetTravelSchedule(User user){
+    public NearestSchedule.Response getNearestSchedule(User user){
         if(user == null) {
             throw new CustomErrorException(ErrorCode.UserNotFoundError);
         }
@@ -62,10 +60,10 @@ public class TravelScheduleService {
             throw new CustomErrorException(ErrorCode.NoClosestTravelScheduleError);
         }
 
-        return TheClosetTravelGetResponseDto.fromDto(travels.get(0));
+        return NearestSchedule.Response.fromDto(travels.get(0));
     }
 
-    private Travel saveTravel(User me, TravelScheduleSaveRequestDto requestDto) {
+    private Travel saveTravel(User me, TravelScheduleSave.Request requestDto) {
         ProvinceType provinceType = ProvinceType.getProvinceType(requestDto.getProvince());
         CityType cityType = CityType.getCityType(requestDto.getCity());
 
@@ -76,7 +74,7 @@ public class TravelScheduleService {
         return travelRepository.save(Travel.of(requestDto, provinceType, cityType));
     }
 
-    private void saveUserTravel(User me, Travel travel, TravelScheduleSaveRequestDto requestDto){
+    private void saveUserTravel(User me, Travel travel, TravelScheduleSave.Request requestDto){
         if(requestDto.getFriendId() != null){
             User friend = userRepository.findById(requestDto.getFriendId()).orElseThrow(() -> new CustomErrorException(ErrorCode.FriendNotFoundError));
             // TODO: 친구가 맞는지 확인하는 로직필요
@@ -87,7 +85,7 @@ public class TravelScheduleService {
         }
     }
 
-    private void saveItinerary(Travel travel, TravelScheduleSaveRequestDto requestDto) {
+    private void saveItinerary(Travel travel, TravelScheduleSave.Request requestDto) {
         // 여행일수와 스케줄의 갯수가 맞는지 확인
         long daysBetween = ChronoUnit.DAYS.between(requestDto.getStartDay(), requestDto.getEndDay());
         if(daysBetween + 1 != requestDto.getItineraries().size()){
@@ -96,7 +94,7 @@ public class TravelScheduleService {
 
 
         for(int scheduleDay = 0; scheduleDay < requestDto.getItineraries().size(); scheduleDay++){
-            TravelItineraryRequestDto travelItineraryRequestDto = requestDto.getItineraries().get(scheduleDay);
+            TravelScheduleSave.Itinerary travelItineraryRequestDto = requestDto.getItineraries().get(scheduleDay);
             if (travelItineraryRequestDto.getStartTime().isAfter(travelItineraryRequestDto.getEndTime())) {
                 throw new CustomErrorException(ErrorCode.InvalidItineraryTimeError);
             }
@@ -119,8 +117,8 @@ public class TravelScheduleService {
 
             // 방문장소가 2개 이상일 경우
             for(int locationIndex = 0; locationIndex < travelItineraryRequestDto.getVisits().size() - 1; locationIndex++){
-                VisitsRequestDto currentTravelVisitLocation = travelItineraryRequestDto.getVisits().get(locationIndex);
-                VisitsRequestDto nextTravelVisitLocation = travelItineraryRequestDto.getVisits().get(locationIndex + 1);
+                TravelScheduleSave.Visits currentTravelVisitLocation = travelItineraryRequestDto.getVisits().get(locationIndex);
+                TravelScheduleSave.Visits nextTravelVisitLocation = travelItineraryRequestDto.getVisits().get(locationIndex + 1);
 
                 if(currentTravelVisitLocation.getStartTime().isAfter(currentTravelVisitLocation.getEndTime())) {
                     throw new CustomErrorException(ErrorCode.InvalidVisitTimeError);
@@ -142,9 +140,9 @@ public class TravelScheduleService {
         }
     }
 
-    private void saveVisits(TravelItineraryRequestDto travelItineraryRequestDto, ItineraryDays travelSchedule) {
+    private void saveVisits(TravelScheduleSave.Itinerary travelItineraryRequestDto, ItineraryDays travelSchedule) {
         for(int locationIndex = 0; locationIndex < travelItineraryRequestDto.getVisits().size(); locationIndex++){
-            VisitsRequestDto travelVisitLocationDto = travelItineraryRequestDto.getVisits().get(locationIndex);
+            TravelScheduleSave.Visits travelVisitLocationDto = travelItineraryRequestDto.getVisits().get(locationIndex);
 
             TimeBlockType timeBlockType = TimeBlockType.getTimeBlockType(travelVisitLocationDto.getTimeBlockType());
             Place place = placeRepository.findById(travelVisitLocationDto.getPlaceId())

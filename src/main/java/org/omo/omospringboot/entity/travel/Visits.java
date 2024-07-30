@@ -3,7 +3,7 @@ package org.omo.omospringboot.entity.travel;
 import jakarta.persistence.*;
 import lombok.*;
 import org.omo.omospringboot.constant.TimeBlockType;
-import org.omo.omospringboot.dto.travel.travelScheduleSave.VisitsRequestDto;
+import org.omo.omospringboot.dto.travel.TravelScheduleSave;
 import org.omo.omospringboot.entity.place.Place;
 
 import java.time.LocalDateTime;
@@ -34,7 +34,7 @@ public class Visits {
     @ManyToOne(fetch = FetchType.LAZY)
     private Place place;
 
-    public static Visits of(ItineraryDays newTravelSchedule, TimeBlockType timeBlockType, Place place, VisitsRequestDto requestDto) {
+    public static Visits of(ItineraryDays newTravelSchedule, TimeBlockType timeBlockType, Place place, TravelScheduleSave.Visits requestDto) {
         return Visits.builder()
                 .travelSchedule(newTravelSchedule)
                 .startTime(requestDto.getStartTime())

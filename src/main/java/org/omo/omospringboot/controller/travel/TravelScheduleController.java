@@ -2,9 +2,8 @@ package org.omo.omospringboot.controller.travel;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.omo.omospringboot.dto.travel.theClosetTravelGet.TheClosetTravelGetResponseDto;
-import org.omo.omospringboot.dto.travel.travelScheduleSave.TravelScheduleSaveRequestDto;
-import org.omo.omospringboot.dto.travel.travelScheduleSave.TravelSchduleSaveResponseDto;
+import org.omo.omospringboot.dto.travel.NearestSchedule;
+import org.omo.omospringboot.dto.travel.TravelScheduleSave;
 import org.omo.omospringboot.entity.user.User;
 import org.omo.omospringboot.service.travel.TravelScheduleService;
 import org.springframework.http.HttpStatus;
@@ -19,18 +18,18 @@ public class TravelScheduleController {
     private final TravelScheduleService travelScheduleService;
 
     @GetMapping("/closet")
-    public ResponseEntity<TheClosetTravelGetResponseDto> getTheClosetTravelSchedule(@AuthenticationPrincipal User user) {
-        return new ResponseEntity<>(travelScheduleService.getTheClosetTravelSchedule(user), HttpStatus.OK);
+    public ResponseEntity<NearestSchedule.Response> getNearestSchedule(@AuthenticationPrincipal User user) {
+        return new ResponseEntity<>(travelScheduleService.getNearestSchedule(user), HttpStatus.OK);
 
     }
 
 
     @PostMapping()
-    public ResponseEntity<TravelSchduleSaveResponseDto> saveTravelCourse(
+    public ResponseEntity<TravelScheduleSave.Response> saveTravelCourse(
             @AuthenticationPrincipal User user,
-            @Valid @RequestBody TravelScheduleSaveRequestDto requestDto
+            @Valid @RequestBody TravelScheduleSave.Request requestDto
     ) {
         travelScheduleService.saveTravelSchedule(user, requestDto);
-        return new ResponseEntity<>(new TravelSchduleSaveResponseDto(), HttpStatus.CREATED);
+        return new ResponseEntity<>(new TravelScheduleSave.Response(), HttpStatus.CREATED);
     }
 }

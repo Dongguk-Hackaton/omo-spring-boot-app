@@ -2,7 +2,7 @@ package org.omo.omospringboot.entity.travel;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.omo.omospringboot.dto.travel.travelScheduleSave.TravelItineraryRequestDto;
+import org.omo.omospringboot.dto.travel.TravelScheduleSave;
 
 import java.time.LocalDateTime;
 
@@ -27,7 +27,7 @@ public class ItineraryDays {
     private LocalDateTime endTime; // 여행 종료시간
 
 
-    public static ItineraryDays of(Travel newTravel, TravelItineraryRequestDto schedule) {
+    public static ItineraryDays of(Travel newTravel, TravelScheduleSave.Itinerary schedule) {
         return ItineraryDays.builder()
                 .travel(newTravel)
                 .startTime(schedule.getStartTime())
