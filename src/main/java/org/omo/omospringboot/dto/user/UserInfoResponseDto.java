@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.omo.omospringboot.entity.User;
+import org.omo.omospringboot.entity.user.User;
 
 import java.time.LocalDateTime;
 

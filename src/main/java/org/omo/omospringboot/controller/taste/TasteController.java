@@ -3,7 +3,7 @@ package org.omo.omospringboot.controller.taste;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.omo.omospringboot.dto.taste.*;
-import org.omo.omospringboot.entity.User;
+import org.omo.omospringboot.entity.user.User;
 import org.omo.omospringboot.service.taste.TasteService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

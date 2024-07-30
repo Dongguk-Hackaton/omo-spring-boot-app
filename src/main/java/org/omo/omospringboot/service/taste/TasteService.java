@@ -7,9 +7,10 @@ import org.omo.omospringboot.constant.ErrorCode;
 import org.omo.omospringboot.constant.FoodType;
 import org.omo.omospringboot.constant.InterestType;
 import org.omo.omospringboot.dto.taste.*;
-import org.omo.omospringboot.entity.*;
+import org.omo.omospringboot.entity.taste.*;
+import org.omo.omospringboot.entity.user.User;
 import org.omo.omospringboot.exception.CustomErrorException;
-import org.omo.omospringboot.repository.*;
+import org.omo.omospringboot.repository.taste.*;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

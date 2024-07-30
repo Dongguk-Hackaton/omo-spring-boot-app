@@ -95,6 +95,41 @@ public enum ErrorCode {
     ),
     NoSuchDateStyleTypeError(
             HttpStatus.NOT_FOUND, "해당 데이트 스타일은 존재하지 않습니다."
+    ),
+
+    // ----- Travel ------
+    NoSuchProvinceTypeError(
+            HttpStatus.NOT_FOUND, "해당 광역시/도는 존재하지 않습니다."
+    ),
+    NoSuchCityTypeError(
+            HttpStatus.NOT_FOUND, "해당 시/군은 존재하지 않습니다."
+    ),
+    InvalidTravelTimeError(
+            HttpStatus.BAD_REQUEST, "여행에 대한 시간이 유효하지 않습니다."
+    ),
+    MismatchedItineraryWithDurationError(
+            HttpStatus.BAD_REQUEST, "여행 기간과 여행일정의 수가 일치하지 않습니다."
+    ),
+    NoSuchPlaceError(
+            HttpStatus.NOT_FOUND, "존재하지 않은 장소입니다."
+    ),
+    FriendNotFoundError(
+            HttpStatus.NOT_FOUND, "친구를 찾을 수 없습니다."
+    ),
+    InvalidItineraryTimeError(
+            HttpStatus.BAD_REQUEST, "여행 일정에 대한 시간이 유효하지 않습니다."
+    ),
+    InvalidVisitTimeError(
+            HttpStatus.BAD_REQUEST, "여행 장소 방문 시간이 유효하지 않습니다."
+    ),
+    TooShortVisitDurationError(
+            HttpStatus.BAD_REQUEST, "여행 방문 장소에 머무는 시간이 너무 짧습니다."
+    ),
+    NoClosestTravelScheduleError(
+            HttpStatus.NOT_FOUND, "가장 가까운 여행일정이 없습니다."
+    ),
+    NoSuchPlaceTypeError(
+            HttpStatus.NOT_FOUND, "존재하지 않은 점포 유형입니다."
     );
 
     private final HttpStatus httpStatus;
