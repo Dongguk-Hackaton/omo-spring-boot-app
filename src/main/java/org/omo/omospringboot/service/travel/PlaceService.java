@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.omo.omospringboot.constant.ErrorCode;
 import org.omo.omospringboot.dto.place.PlaceGet;
 import org.omo.omospringboot.entity.place.*;
+import org.omo.omospringboot.entity.user.User;
 import org.omo.omospringboot.exception.CustomErrorException;
 import org.omo.omospringboot.repository.place.PlaceRepository;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,11 @@ import org.springframework.stereotype.Service;
 @Transactional
 public class PlaceService {
     private final PlaceRepository placeRepository;
-    public PlaceGet.Response getPlace(Long placeId){
+    public PlaceGet.Response getPlace(User user, Long placeId){
+        if (user == null) {
+            throw new CustomErrorException(ErrorCode.UserNotFoundError);
+        }
+
         Place place = placeRepository.findById(placeId).orElseThrow(() -> new CustomErrorException(ErrorCode.NoSuchPlaceError));
 
         if(place instanceof CultureFacility){
