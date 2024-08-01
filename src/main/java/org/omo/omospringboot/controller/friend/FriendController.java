@@ -1,4 +1,4 @@
-package org.omo.omospringboot.controller.Friend;
+package org.omo.omospringboot.controller.friend;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

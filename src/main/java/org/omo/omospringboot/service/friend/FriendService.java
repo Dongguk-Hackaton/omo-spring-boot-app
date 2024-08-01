@@ -11,6 +11,7 @@ import org.omo.omospringboot.repository.friend.FriendRepository;
 import org.omo.omospringboot.repository.taste.*;
 import org.omo.omospringboot.repository.user.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class FriendService {
 
     private final FriendRepository friendRepository;
