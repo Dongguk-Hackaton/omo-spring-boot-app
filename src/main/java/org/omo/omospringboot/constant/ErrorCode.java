@@ -130,6 +130,14 @@ public enum ErrorCode {
     ),
     NoSuchPlaceTypeError(
             HttpStatus.NOT_FOUND, "존재하지 않은 점포 유형입니다."
+    ),
+
+    // ----- Friend ------
+    AlreadyExistFriend(
+            HttpStatus.CONFLICT, "이미 친구목록에 등록되어 있습니다."
+    ),
+    SelfAddError(
+            HttpStatus.CONFLICT, "자신을 친구추가 할 수 없습니다."
     );
 
     private final HttpStatus httpStatus;

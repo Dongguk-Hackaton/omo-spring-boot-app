@@ -19,4 +19,11 @@ public class FriendShip {
 
     @ManyToOne(fetch = FetchType.LAZY)
     User friend;
+
+    public static FriendShip of(User user, User friend){
+        return FriendShip.builder()
+                .user(user)
+                .friend(friend)
+                .build();
+    }
 }
